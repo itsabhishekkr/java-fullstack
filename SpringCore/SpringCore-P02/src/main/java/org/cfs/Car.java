@@ -1,28 +1,21 @@
 package org.cfs;
-
 public class Car {
     Engine engine;
     public void drive(){
         int start = engine.start();
         if(start >= 1){
-            System.out.println("lets start the engine"+ start);
+            System.out.println("lets start the engine " + start);
         }else{
-            System.out.println("lets not start the engine" + start);
+            System.out.println("lets not start the engine " + start);
         }
     }
+
     public Car(){
         System.out.println("car constructor");
     }
-    public Car(Engine engine) {
+
+    public void setEngine(Engine engine) {
+        System.out.println("set engine method");
         this.engine = engine;
     }
-
-    //    public void setEngine(PetrolEngine engine) {
-//        this.engine = engine;
-//    }
-    public void setEngine(Engine engine){
-        this.engine=engine;
-    }
-
-
 }
