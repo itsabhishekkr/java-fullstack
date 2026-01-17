@@ -50,7 +50,6 @@ public class WeatherService {
 
         ArrayList<DayTemp> tempday = new ArrayList<DayTemp>();
         for(Forecastday f:respose.getForecast().getForecastday()){
-            //DayTemp(LocalDate date, Double minTemp, Double maxTemp, Double avgTemp)
             tempday.add(new DayTemp(f.getDate(),f.getDay().getMintemp_c(),f.getDay().getMaxtemp_c(),f.getDay().getAvgtemp_c()));
         }
         myFor.setDayTemp(tempday);

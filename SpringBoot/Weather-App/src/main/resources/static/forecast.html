@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forecast Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+        }
+        body {
+            margin: 0; padding: 20px; font-family: 'Segoe UI', sans-serif;
+            background: var(--primary-gradient); min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* Form at the top */
+        .form-container {
+            background: var(--glass-bg); padding: 20px;
+            border-radius: 15px; display: flex; gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin-bottom: 20px;
+            flex-wrap: wrap; justify-content: center;
+        }
+        input { padding: 10px; border-radius: 8px; border: 1px solid #ccc; outline: none; }
+        button {
+            padding: 10px 20px; background: #764ba2; color: white;
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
+
+        /* Chart Section */
+        .chart-card {
+            background: var(--glass-bg); padding: 2rem;
+            border-radius: 20px; width: 90%; max-width: 800px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            display: none; /* Hidden until search */
+        }
+        h2 { text-align: center; margin-top: 0; color: #333; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <input type="text" id="fCity" placeholder="City (e.g. Kanpur)">
+    <input type="number" id="fDays" placeholder="Days (1-14)" value="14" min="1" max="14">
+    <button onclick="getForecast()">Show Forecast Graph</button>
+</div>
+
+<div id="chartContainer" class="chart-card">
+    <h2 id="chartTitle">Temperature Trend</h2>
+    <canvas id="weatherChart"></canvas>
+</div>
+
+<script>
+    let myChart = null; // To store chart instance
+
+    async function getForecast() {
+        const city = document.getElementById('fCity').value.trim();
+        const days = document.getElementById('fDays').value;
+
+        if(!city) return alert("Enter a city!");
+
+        try {
+            // Fetch API 2
+            const response = await fetch(`http://localhost:8080/weather/forcast?city=${city}&days=${days}`);
+            if(!response.ok) throw new Error("Forecast failed");
+
+            const data = await response.json();
+
+            // Prepare Data for Chart.js
+            const labels = data.dayTemp.map(d => d.date);
+            const maxTemps = data.dayTemp.map(d => d.maxTemp);
+            const avgTemps = data.dayTemp.map(d => d.avgTemp);
+            const minTemps = data.dayTemp.map(d => d.minTemp);
+
+            // Show Card
+            document.getElementById('chartContainer').style.display = 'block';
+            document.getElementById('chartTitle').innerText = `Forecast for ${data.wetherResponse.city} (${days} Days)`;
+
+            // Render Chart
+            renderChart(labels, maxTemps, avgTemps, minTemps);
+
+        } catch (err) {
+            alert("Error: " + err.message);
+        }
+    }
+
+    function renderChart(labels, max, avg, min) {
+        const ctx = document.getElementById('weatherChart').getContext('2d');
+
+        // Destroy previous chart if exists to avoid glitches
+        if(myChart) myChart.destroy();
+
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Max Temp', data: max, borderColor: '#ff6b6b', backgroundColor: 'rgba(255,107,107,0.2)', fill: true },
+                    { label: 'Avg Temp', data: avg, borderColor: '#764ba2', backgroundColor: 'transparent', borderDash: [5,5] },
+                    { label: 'Min Temp', data: min, borderColor: '#4ecdc4', backgroundColor: 'rgba(78,205,196,0.2)', fill: true }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                scales: { y: { beginAtZero: false, title: {display: true, text: 'Temp (°C)'} } }
+            }
+        });
+    }
+</script>
+</body>
+</html>
