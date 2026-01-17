@@ -3,10 +3,12 @@ package com.cfs.Weather_App.dto;
 public class Root{
     public Location location;
     public Current current;
+    public Forecast forecast;
 
-    public Root(Location location, Current current) {
+    public Root(Location location, Current current, Forecast forecast) {
         this.location = location;
         this.current = current;
+        this.forecast = forecast;
     }
 
     public Root() {
@@ -26,5 +28,13 @@ public class Root{
 
     public void setCurrent(Current current) {
         this.current = current;
+    }
+
+    public Forecast getForecast() {
+        return forecast;
+    }
+
+    public void setForecast(Forecast forecast) {
+        this.forecast = forecast;
     }
 }
