@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context docBase="D:/project/ServletLifeCycle/src/main/webapp">
+  <Resources cacheMaxSize="10240">
+    <PreResources base="D:/project/ServletLifeCycle/target/classes" className="org.apache.catalina.webresources.DirResourceSet" webAppMount="/WEB-INF/classes"/>
+    <PostResources base="D:/project/apache-tomcat-9.0.113-windows-x64/apache-tomcat-9.0.113/lib/servlet-api.jar" className="org.apache.catalina.webresources.FileResourceSet" webAppMount="/WEB-INF/lib/servlet-api.jar"/>
+  </Resources>
+</Context>
